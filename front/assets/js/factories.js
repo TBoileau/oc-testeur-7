@@ -13,3 +13,10 @@ export function createWork(work) {
 
   return figure;
 }
+
+export function createCategory(category) {
+  const button = document.createElement('button');
+  button.classList.add('category');
+  button.textContent = category.name;
+  return button;
+}

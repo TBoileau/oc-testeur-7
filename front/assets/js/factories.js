@@ -20,3 +20,28 @@ export function createCategory(category) {
   button.textContent = category.name;
   return button;
 }
+
+export function createLogin() {
+  const li = document.createElement('li');
+
+  const link = document.createElement('a');
+  link.href = './login.html';
+  link.textContent = 'login';
+
+  li.appendChild(link);
+
+  return li;
+}
+
+export function createLogout({onClick}) {
+  const li = document.createElement('li');
+
+  const link = document.createElement('a');
+  link.href = '#';
+  link.textContent = 'logout';
+  link.addEventListener('click', onClick);
+
+  li.appendChild(link);
+
+  return li;
+}

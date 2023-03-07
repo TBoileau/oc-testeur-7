@@ -1,4 +1,5 @@
 import {login} from "./repositories.js";
+import {clear, save} from "./security.js";
 
 function check(input, constraint, message) {
   const inputError = input.closest('.form-group').querySelector('.input-error');
@@ -36,10 +37,12 @@ form.addEventListener('submit', (e) => {
         formError.remove();
       }
 
-      localStorage.setItem('token', JSON.stringify(token));
+      save(token);
       window.location.href = './';
     })
     .catch(error => {
+      clear();
+
       let formError = form.querySelector('.form-error');
 
       if (formError === null) {

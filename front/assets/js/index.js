@@ -1,9 +1,9 @@
-import {createCategory, createWork} from "./factories.js";
+import {createCategory, createLogin, createLogout, createWork} from "./factories.js";
 import {getCategories, getWorks} from "./repositories.js";
 import {Category} from "./models.js";
+import {clear, isLogged} from "./security.js";
 
 function renderWorks(works, category) {
-
   const worksContainer = document.querySelector('.gallery');
   worksContainer.innerHTML = '';
   works
@@ -36,3 +36,18 @@ categories.forEach(category => {
 });
 
 renderWorks(works, categories[0]);
+
+const nav = document.querySelector('header nav ul');
+
+
+if (isLogged()) {
+  const onClick = () => {
+    console.log("ici")
+    clear();
+    window.location.reload();
+  };
+
+  nav.insertBefore(createLogout({onClick}), nav.querySelector('li:last-child'));
+} else {
+  nav.insertBefore(createLogin(), nav.querySelector('li:last-child'));
+}

@@ -45,3 +45,27 @@ export function createLogout({onClick}) {
 
   return li;
 }
+
+export function createEditionMode({ onClick }) {
+  const div = document.createElement('div');
+  div.classList.add('edition-mode');
+
+  const p = document.createElement('p');
+
+  const icon = document.createElement('img');
+  icon.src = './assets/images/edition-mode.png';
+  p.appendChild(icon);
+
+  const span = document.createElement('span');
+  span.textContent = 'Mode édition';
+  p.appendChild(span);
+
+  const button = document.createElement('button');
+  button.textContent = 'publier les changements';
+  button.addEventListener('click', onClick);
+
+  div.appendChild(p);
+  div.appendChild(button);
+
+  return div;
+}

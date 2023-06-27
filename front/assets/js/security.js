@@ -13,3 +13,10 @@ export function isLogged() {
 export function getToken() {
   return isLogged() ? JSON.parse(localStorage.getItem('token')) : null;
 }
+
+export class UnauthorizedError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'Unauthorized';
+  }
+}

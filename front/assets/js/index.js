@@ -4,12 +4,13 @@ import {
   createEditionMode,
   createLogin,
   createLogout,
-  createModal, createModalWork,
+  createModal,
+  createModalWork,
   createWork
 } from "./factories.js";
-import {getCategories, getWorks} from "./repositories.js";
+import {getCategories, getWorks, removeWork} from "./repositories.js";
 import {Category} from "./models.js";
-import {clear, isLogged} from "./security.js";
+import {clear, isLogged, UnauthorizedError} from "./security.js";
 
 const header = document.querySelector('header');
 const nav = header.querySelector('nav ul');
@@ -56,7 +57,28 @@ function renderWorks(works, category) {
     const listWorks = document.querySelector('.list-works .works');
     listWorks.innerHTML = '';
     works.forEach(work => {
-      listWorks.appendChild(createModalWork(work));
+      listWorks.appendChild(
+        createModalWork({
+          work,
+          onClick: async () => {
+            try {
+              await removeWork(work);
+
+              const works = await getWorks();
+
+              renderWorks(works, category);
+            } catch (e) {
+              console.log(e instanceof UnauthorizedError)
+              if (e instanceof UnauthorizedError) {
+                clear();
+                window.location.reload();
+              }
+
+              console.error(e);
+            }
+          }
+        })
+      );
     });
   }
 }

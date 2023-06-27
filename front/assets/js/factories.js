@@ -178,7 +178,7 @@ export function createModal() {
   return modal;
 }
 
-export function createModalWork(work) {
+export function createModalWork({work, onClick}) {
   const figure = document.createElement('figure');
   figure.classList.add('work');
 
@@ -201,6 +201,8 @@ export function createModalWork(work) {
   icon.src = './assets/icons/trash.svg';
   icon.alt = 'supprimer';
   remove.appendChild(icon);
+
+  remove.addEventListener('click', onClick);
 
   figure.appendChild(remove);
 

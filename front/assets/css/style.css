@@ -157,8 +157,11 @@ header nav li.active {
 }
 
 #portfolio h2 {
-  text-align: center;
   margin-bottom: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
 }
 
 .gallery {
@@ -369,4 +372,16 @@ main:has(#login) {
   font-weight: 500;
   border: 0;
   cursor: pointer;
+}
+
+.edit-projects {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  color: #000;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 400;
+  line-height: 18px;
 }

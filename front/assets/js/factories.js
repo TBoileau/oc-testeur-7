@@ -53,7 +53,7 @@ export function createEditionMode({ onClick }) {
   const p = document.createElement('p');
 
   const icon = document.createElement('img');
-  icon.src = './assets/images/edition-mode.png';
+  icon.src = './assets/icons/edition-mode.png';
   p.appendChild(icon);
 
   const span = document.createElement('span');
@@ -68,4 +68,22 @@ export function createEditionMode({ onClick }) {
   div.appendChild(button);
 
   return div;
+}
+
+export function createEditButton({ onClick }) {
+  const a = document.createElement('a');
+  a.classList.add('edit-projects');
+  a.ariaLabel = 'modifier';
+  a.href = '#';
+  a.addEventListener('click', onClick);
+
+  const icon = document.createElement('img');
+  icon.src = './assets/icons/edition-mode-black.png';
+  a.appendChild(icon);
+
+  const span = document.createElement('span');
+  span.textContent = 'modifier';
+  a.appendChild(span);
+
+  return a;
 }

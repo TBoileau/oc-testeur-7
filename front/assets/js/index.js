@@ -1,4 +1,11 @@
-import {createCategory, createEditionMode, createLogin, createLogout, createWork} from "./factories.js";
+import {
+  createCategory,
+  createEditButton,
+  createEditionMode,
+  createLogin,
+  createLogout,
+  createWork
+} from "./factories.js";
 import {getCategories, getWorks} from "./repositories.js";
 import {Category} from "./models.js";
 import {clear, isLogged} from "./security.js";
@@ -39,6 +46,7 @@ renderWorks(works, categories[0]);
 
 const header = document.querySelector('header');
 const nav = header.querySelector('nav ul');
+const myProjectsTitle = document.querySelector('#portfolio h2');
 
 if (isLogged()) {
   const onClick = () => {
@@ -49,6 +57,8 @@ if (isLogged()) {
   nav.insertBefore(createLogout({onClick}), nav.querySelector('li:last-child'));
 
   document.body.insertBefore(createEditionMode({ onClick: () => {} }), header);
+
+  myProjectsTitle.appendChild(createEditButton({ onClick: () => {} }))
 } else {
   nav.insertBefore(createLogin(), nav.querySelector('li:last-child'));
 }

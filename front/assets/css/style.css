@@ -46,6 +46,11 @@ blockquote, q {
   quotes: none;
 }
 
+figure {
+  display: flex;
+  flex-direction: column;
+}
+
 blockquote:before, blockquote:after,
 q:before, q:after {
   content: '';
@@ -174,7 +179,8 @@ header nav li.active {
 
 .gallery img {
   width: 100%;
-
+  height: 100%;
+  object-fit: cover;
 }
 
 #contact {
@@ -436,12 +442,13 @@ main:has(#login) {
   display: flex;
 }
 
-.list-works {
+.list-works, .add-work {
   flex-direction: column;
+  align-items: center;
   gap: 2rem;
 }
 
-.list-works h2 {
+.list-works h2, .add-work h2 {
   font-size: 26px;
   display: flex;
   align-items: center;
@@ -464,6 +471,8 @@ main:has(#login) {
 
 .list-works .works .work > img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .remove-work {
@@ -488,7 +497,7 @@ main:has(#login) {
   display: flex;
 }
 
-.list-works hr {
+hr {
   width: 100%;
   height: 1px;
   background: #b3b3b3;
@@ -513,4 +522,125 @@ main:has(#login) {
   font-family: 'Syne', sans-serif;
   text-decoration: none;
   text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  align-items: center;
+}
+
+.form-control {
+  display: flex;
+  flex-direction: column;
+  gap: .625rem;
+  width: 100%;
+}
+
+.form-control label {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 500;
+  font-size: .875rem;
+  color: #3d3d3d;
+}
+
+.form-control input {
+  border: 0;
+  background: #FFF;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .09);
+  padding: 1rem;
+}
+
+.form-control select {
+  border: 0;
+  background: #FFF;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .09);
+  padding: 1rem;
+  appearance: none;
+  background-image: url('../icons/chevron-down.svg');
+  background-position: calc(100% - 1.5rem) center;
+  background-repeat: no-repeat;
+  background-size: 12px;
+}
+
+.control-upload {
+  position: relative;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: #E8F1F6;
+  border-radius: 3px;
+  width: 100%;
+  padding: 1.25rem;
+}
+
+.form-help {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 400;
+  font-size: .75rem;
+  color: #444444;
+}
+
+input[type=file] {
+  height: 1px;
+  width: 1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+}
+
+.upload-label {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 500;
+  font-size: .875rem;
+  color: #306685;
+  border-radius: 50px;
+  padding: .625rem 2rem;
+  background: #CBD6DC;
+  cursor: pointer;
+}
+
+.preview {
+  position: absolute;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.upload-label {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 500;
+  font-size: .875rem;
+  color: #306685;
+  border-radius: 50px;
+  padding: .625rem 2rem;
+  background: #CBD6DC;
+  cursor: pointer;
+}
+
+.form-submit {
+  background: #1D6154;
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 60px;
+  border-radius: 60px;
+  border: none;
+  cursor: pointer;
+}
+
+.form-submit[disabled] {
+  background: #A7A7A7;
+  cursor: unset;
+}
+
+form > .form-error {
+  margin-bottom: 1rem;
 }

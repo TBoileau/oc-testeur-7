@@ -46,7 +46,7 @@ export function createLogout({onClick}) {
   return li;
 }
 
-export function createEditionMode({ onClick }) {
+export function createEditionMode() {
   const div = document.createElement('div');
   div.classList.add('edition-mode');
 
@@ -63,7 +63,6 @@ export function createEditionMode({ onClick }) {
 
   const button = document.createElement('button');
   button.textContent = 'publier les changements';
-  button.addEventListener('click', onClick);
 
   div.appendChild(p);
   div.appendChild(button);
@@ -71,7 +70,7 @@ export function createEditionMode({ onClick }) {
   return div;
 }
 
-export function createEditButton({ onClick }) {
+export function createEditButton({onClick}) {
   const a = document.createElement('a');
   a.classList.add('edit-projects');
   a.ariaLabel = 'modifier';
@@ -90,7 +89,7 @@ export function createEditButton({ onClick }) {
   return a;
 }
 
-export function createModal() {
+export function createModal({categories, onAdd}) {
   const modal = document.createElement('div');
   modal.classList.add('modal');
 
@@ -106,6 +105,22 @@ export function createModal() {
   modal.appendChild(modalContent);
   modalContent.appendChild(modalClose);
 
+  const list = createModalListWorks({
+    onAdd: () => {
+      list.classList.toggle('show');
+      add.classList.toggle('show');
+    }
+  });
+
+  const add = createModalAddWork({
+    categories,
+    onSubmit: onAdd,
+    onBack: () => {
+      list.classList.toggle('show');
+      add.classList.toggle('show');
+    }
+  });
+
   const closeModal = () => {
     modal.classList.remove('show');
     list.classList.add('show');
@@ -118,6 +133,262 @@ export function createModal() {
 
   modalContent.addEventListener('click', (e) => e.stopPropagation());
 
+  modalContent.appendChild(list);
+
+  modalContent.appendChild(add);
+
+  return modal;
+}
+
+function createModalAddWork({categories, onBack, onSubmit}) {
+  const add = document.createElement('section');
+  add.classList.add('add-work');
+
+  const backToList = document.createElement('a');
+  backToList.classList.add('back-to-list');
+  backToList.href = '#';
+  backToList.ariaLabel = 'retour à la liste';
+  backToList.textContent = '←';
+
+  add.appendChild(backToList);
+
+  const addTitle = document.createElement('h2');
+  addTitle.textContent = 'Ajout photo';
+
+  add.appendChild(addTitle);
+
+  const form = document.createElement('form');
+  form.classList.add('form');
+
+  add.appendChild(form);
+
+  const upload = document.createElement('div');
+  upload.classList.add('form-control', 'control-upload');
+
+  form.appendChild(upload);
+
+  const uploadIcon = document.createElement('img');
+  uploadIcon.src = './assets/icons/image.svg';
+  uploadIcon.alt = 'Ajouter photo';
+
+  upload.appendChild(uploadIcon);
+
+  const uploadLabel = document.createElement('label');
+  uploadLabel.classList.add('upload-label');
+  uploadLabel.htmlFor = 'upload';
+  uploadLabel.textContent = '+ Ajouter photo';
+
+  upload.appendChild(uploadLabel);
+
+  const uploadInput = document.createElement('input');
+  uploadInput.type = 'file';
+  uploadInput.id = 'upload';
+  uploadInput.name = 'upload';
+  uploadInput.accept = 'image/*';
+
+  upload.appendChild(uploadInput);
+
+  const uploadHelp = document.createElement('span');
+  uploadHelp.classList.add('form-help');
+  uploadHelp.textContent = 'jpg, png : 4mo max';
+
+  upload.appendChild(uploadHelp);
+
+  const title = document.createElement('div');
+  title.classList.add('form-control');
+
+  form.appendChild(title);
+
+  const titleLabel = document.createElement('label');
+  titleLabel.htmlFor = 'title';
+  titleLabel.textContent = 'Titre';
+
+  title.appendChild(titleLabel);
+
+  const titleInput = document.createElement('input');
+  titleInput.type = 'text';
+  titleInput.id = 'title';
+  titleInput.name = 'title';
+  titleInput.required = true;
+
+  title.appendChild(titleInput);
+
+  const category = document.createElement('div');
+  category.classList.add('form-control');
+
+  const categoryLabel = document.createElement('label');
+  categoryLabel.htmlFor = 'category';
+  categoryLabel.textContent = 'Catégorie';
+
+  category.appendChild(categoryLabel);
+
+  const categorySelect = document.createElement('select');
+  categorySelect.id = 'category';
+  categorySelect.name = 'category';
+  categorySelect.required = true;
+
+  category.appendChild(categorySelect);
+
+  categories.forEach((category) => {
+    const option = document.createElement('option');
+    option.value = category.id;
+    option.textContent = category.name;
+    categorySelect.appendChild(option);
+  });
+
+  form.appendChild(category);
+
+  const hr = document.createElement('hr');
+
+  form.appendChild(hr);
+
+  const submit = document.createElement('button');
+  submit.type = 'submit';
+  submit.textContent = 'Valider';
+  submit.classList.add('form-submit');
+  submit.disabled = true;
+
+  form.appendChild(submit);
+
+  const deletePreview = () => {
+    if (upload.querySelector('.preview') !== null) {
+      upload.querySelector('.preview').remove();
+    }
+  };
+
+  const resetForm = () => {
+    deletePreview();
+    uploadInput.value = '';
+    titleInput.value = '';
+    submit.disabled = true;
+    removeError({control: title});
+    removeError({control: upload});
+  };
+
+  const removeError = ({control}) => {
+    control.classList.remove('is-invalid');
+    if (control.querySelector('.form-error') !== null) {
+      control.querySelector('.form-error').remove();
+    }
+  }
+
+  const addError = ({control, message, append}) => {
+    append = append === undefined ? true : append;
+
+    control.classList.add('is-invalid');
+
+    if (control.querySelector('.form-error') === null) {
+      const error = document.createElement('span');
+      error.classList.add('form-error');
+      error.textContent = message;
+
+      if (append) {
+        control.append(error);
+      } else {
+        control.prepend(error);
+      }
+    }
+  };
+
+  const validateForm = () => {
+    let valid = true;
+
+    valid = uploadValidate() && valid;
+
+    valid = titleValidate() && valid;
+
+    if (valid) {
+      submit.disabled = false;
+    }
+
+    return valid;
+  };
+
+  const titleValidate = () => {
+    return titleInput.value.trim() !== '';
+  };
+
+  const uploadValidate = () => {
+    return uploadInput.files.length === 1;
+  };
+
+  uploadInput.addEventListener('change', () => {
+    if (!uploadValidate()) {
+      addError({
+        control: upload,
+        message: 'Veuillez ajouter une photo'
+      });
+    } else {
+      removeError({control: upload});
+    }
+
+    validateForm();
+  });
+
+  titleInput.addEventListener('change', () => {
+    if (!titleValidate()) {
+      addError({
+        control: title,
+        message: 'Veuillez ajouter un titre'
+      });
+    } else {
+      removeError({control: title});
+    }
+
+    validateForm();
+  });
+
+  backToList.addEventListener('click', onBack);
+
+  backToList.addEventListener('click', resetForm);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return false;
+    }
+
+    try {
+      onSubmit({
+        title: titleInput.value,
+        category: categorySelect.value,
+        image: uploadInput.files[0]
+      });
+      resetForm();
+    } catch (error) {
+      addError({
+        control: form,
+        message: error.message,
+        valid: false
+      });
+    }
+
+    return false;
+  });
+
+  uploadInput.addEventListener('change', () => {
+    if (uploadInput.files && uploadInput.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = (e) => {
+        deletePreview();
+
+        const preview = document.createElement('img');
+        preview.classList.add('preview');
+        preview.src = e.target.result;
+
+        upload.appendChild(preview);
+      }
+
+      reader.readAsDataURL(uploadInput.files[0]);
+    }
+  });
+
+  return add;
+}
+
+function createModalListWorks({onAdd}) {
   const list = document.createElement('section');
   list.classList.add('list-works', 'show');
 
@@ -150,32 +421,9 @@ export function createModal() {
 
   list.appendChild(removeGallery);
 
-  modalContent.appendChild(list);
+  toAdd.addEventListener('click', onAdd);
 
-  const add = document.createElement('section');
-  add.classList.add('add-work');
-
-  const backToList = document.createElement('a');
-  backToList.classList.add('back-to-list');
-  backToList.href = '#';
-  backToList.ariaLabel = 'retour à la liste';
-  backToList.textContent = '←';
-
-  add.appendChild(backToList);
-
-  modalContent.appendChild(add);
-
-  toAdd.addEventListener('click', () => {
-    list.classList.toggle('show');
-    add.classList.toggle('show');
-  });
-
-  backToList.addEventListener('click', () => {
-    list.classList.toggle('show');
-    add.classList.toggle('show');
-  });
-
-  return modal;
+  return list;
 }
 
 export function createModalWork({work, onClick}) {

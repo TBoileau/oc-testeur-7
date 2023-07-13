@@ -8,13 +8,19 @@ import {
   createModalWork,
   createWork
 } from "./factories.js";
-import {getCategories, getWorks, removeWork} from "./repositories.js";
+import {addWork, getCategories, getWorks, removeWork} from "./repositories.js";
 import {Category} from "./models.js";
 import {clear, isLogged, UnauthorizedError} from "./security.js";
 
 const header = document.querySelector('header');
 const nav = header.querySelector('nav ul');
 const myProjectsTitle = document.querySelector('#portfolio h2');
+
+let works = await getWorks();
+
+const categories = await getCategories();
+
+let categorySelected = {id: null};
 
 if (isLogged()) {
   const onClick = () => {
@@ -24,15 +30,29 @@ if (isLogged()) {
 
   nav.insertBefore(createLogout({onClick}), nav.querySelector('li:last-child'));
 
-  document.body.insertBefore(createEditionMode({
-    onClick: () => {
-    }
-  }), header);
+  document.body.insertBefore(createEditionMode(), header);
 
-  const modal = createModal();
+  const modal = createModal({
+    categories,
+    onAdd: async (work) => {
+      try {
+        await addWork(work);
+
+        works = await getWorks();
+
+        renderWorks();
+
+        modal.classList.remove('show');
+      } catch (e) {
+        if (e instanceof UnauthorizedError) {
+          clear();
+          window.location.reload();
+        }
+      }
+    }
+  });
 
   document.body.appendChild(modal);
-
   myProjectsTitle.appendChild(
     createEditButton({
       onClick: () => {
@@ -44,11 +64,12 @@ if (isLogged()) {
   nav.insertBefore(createLogin(), nav.querySelector('li:last-child'));
 }
 
-function renderWorks(works, category) {
+function renderWorks() {
   const worksContainer = document.querySelector('.gallery');
   worksContainer.innerHTML = '';
+
   works
-    .filter(work => category.id === null || work.category.id === category.id)
+    .filter(work => categorySelected.id === null || work.category.id === categorySelected.id)
     .forEach(work => {
       worksContainer.appendChild(createWork(work));
     });
@@ -64,17 +85,14 @@ function renderWorks(works, category) {
             try {
               await removeWork(work);
 
-              const works = await getWorks();
+              works = await getWorks();
 
-              renderWorks(works, category);
+              renderWorks();
             } catch (e) {
-              console.log(e instanceof UnauthorizedError)
               if (e instanceof UnauthorizedError) {
                 clear();
                 window.location.reload();
               }
-
-              console.error(e);
             }
           }
         })
@@ -83,11 +101,7 @@ function renderWorks(works, category) {
   }
 }
 
-const works = await getWorks();
-
-const categories = [new Category({id: null, name: 'Tous'}), ...await getCategories()];
-
-categories.forEach(category => {
+[new Category({id: null, name: 'Tous'}), ...categories].forEach(category => {
   const categoryButton = createCategory(category);
 
   if (category.id === null) {
@@ -98,11 +112,12 @@ categories.forEach(category => {
     if (document.querySelector('.category.active') !== null) {
       document.querySelector('.category.active').classList.toggle('active');
     }
+    categorySelected = category;
     categoryButton.classList.toggle('active');
-    renderWorks(works, category);
+    renderWorks();
   });
 
   document.querySelector('.categories').appendChild(categoryButton);
 });
 
-renderWorks(works, categories[0]);
+renderWorks();

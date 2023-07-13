@@ -34,6 +34,9 @@ if (isLogged()) {
 
   const modal = createModal({
     categories,
+    /**
+     * @param work {Work}
+     */
     onAdd: async (work) => {
       try {
         await addWork(work);

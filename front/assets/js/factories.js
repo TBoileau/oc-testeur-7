@@ -1,3 +1,7 @@
+/**
+ * @param work {Work}
+ * @returns {HTMLElement}
+ */
 export function createWork(work) {
   const figure = document.createElement('figure');
 
@@ -14,6 +18,10 @@ export function createWork(work) {
   return figure;
 }
 
+/**
+ * @param category {Category}
+ * @returns {HTMLElement}
+ */
 export function createCategory(category) {
   const button = document.createElement('button');
   button.classList.add('category');
@@ -21,6 +29,9 @@ export function createCategory(category) {
   return button;
 }
 
+/**
+ * @returns {HTMLElement}
+ */
 export function createLogin() {
   const li = document.createElement('li');
 
@@ -33,6 +44,10 @@ export function createLogin() {
   return li;
 }
 
+/**
+ * @param onClick {function}
+ * @returns {HTMLElement}
+ */
 export function createLogout({onClick}) {
   const li = document.createElement('li');
 
@@ -46,6 +61,9 @@ export function createLogout({onClick}) {
   return li;
 }
 
+/**
+ * @returns {HTMLElement}
+ */
 export function createEditionMode() {
   const div = document.createElement('div');
   div.classList.add('edition-mode');
@@ -70,6 +88,10 @@ export function createEditionMode() {
   return div;
 }
 
+/**
+ * @param onClick {function}
+ * @returns {HTMLElement}
+ */
 export function createEditButton({onClick}) {
   const a = document.createElement('a');
   a.classList.add('edit-projects');
@@ -89,6 +111,11 @@ export function createEditButton({onClick}) {
   return a;
 }
 
+/**
+ * @param categories {Category[]}
+ * @param onAdd {function}
+ * @returns {HTMLElement}
+ */
 export function createModal({categories, onAdd}) {
   const modal = document.createElement('div');
   modal.classList.add('modal');
@@ -140,6 +167,12 @@ export function createModal({categories, onAdd}) {
   return modal;
 }
 
+/**
+ * @param categories {Category[]}
+ * @param onBack {function}
+ * @param onSubmit {function}
+ * @returns {HTMLElement}
+ */
 function createModalAddWork({categories, onBack, onSubmit}) {
   const add = document.createElement('section');
   add.classList.add('add-work');
@@ -229,6 +262,9 @@ function createModalAddWork({categories, onBack, onSubmit}) {
 
   category.appendChild(categorySelect);
 
+  /**
+   * @param category {Category}
+   */
   categories.forEach((category) => {
     const option = document.createElement('option');
     option.value = category.id;
@@ -265,6 +301,9 @@ function createModalAddWork({categories, onBack, onSubmit}) {
     removeError({control: upload});
   };
 
+  /**
+   * @param control {HTMLElement}
+   */
   const removeError = ({control}) => {
     control.classList.remove('is-invalid');
     if (control.querySelector('.form-error') !== null) {
@@ -272,6 +311,11 @@ function createModalAddWork({categories, onBack, onSubmit}) {
     }
   }
 
+  /**
+   * @param control {HTMLElement}
+   * @param message {string}
+   * @param append {boolean|undefined}
+   */
   const addError = ({control, message, append}) => {
     append = append === undefined ? true : append;
 
@@ -290,6 +334,9 @@ function createModalAddWork({categories, onBack, onSubmit}) {
     }
   };
 
+  /**
+   * @returns {boolean}
+   */
   const validateForm = () => {
     let valid = true;
 
@@ -304,10 +351,16 @@ function createModalAddWork({categories, onBack, onSubmit}) {
     return valid;
   };
 
+  /**
+   * @returns {boolean}
+   */
   const titleValidate = () => {
     return titleInput.value.trim() !== '';
   };
 
+  /**
+   * @returns {boolean}
+   */
   const uploadValidate = () => {
     return uploadInput.files.length === 1;
   };
@@ -388,6 +441,10 @@ function createModalAddWork({categories, onBack, onSubmit}) {
   return add;
 }
 
+/**
+ * @param onAdd {function}
+ * @returns {HTMLElement}
+ */
 function createModalListWorks({onAdd}) {
   const list = document.createElement('section');
   list.classList.add('list-works', 'show');
@@ -426,6 +483,11 @@ function createModalListWorks({onAdd}) {
   return list;
 }
 
+/**
+ * @param work {Work}
+ * @param onAdd {function}
+ * @returns {HTMLElement}
+ */
 export function createModalWork({work, onClick}) {
   const figure = document.createElement('figure');
   figure.classList.add('work');

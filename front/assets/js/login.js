@@ -1,6 +1,12 @@
 import {login} from "./repositories.js";
 import {clear, save} from "./security.js";
 
+/**
+ * @param input {HTMLInputElement}
+ * @param constraint {RegExp}
+ * @param message {string}
+ * @returns {boolean}
+ */
 function check(input, constraint, message) {
   const inputError = input.closest('.form-group').querySelector('.input-error');
 

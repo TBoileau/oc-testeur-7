@@ -2,11 +2,18 @@ import {API_URL} from "./config.js";
 import {Category, Work} from "./models.js";
 import {getToken, UnauthorizedError} from "./security.js";
 
+/**
+ * @returns {Promise<Work[]>}
+ */
 export async function getWorks() {
   const works = await (await fetch(`${API_URL}/works`)).json();
   return works.map(work => new Work(work));
 }
 
+/**
+ * @param id {number}
+ * @returns {Promise<*>}
+ */
 export async function removeWork({id}) {
   return await fetch(
     `${API_URL}/works/${id}`,
@@ -28,6 +35,11 @@ export async function removeWork({id}) {
   });
 }
 
+/**
+ *
+ * @param work {{title: string, image: File, category: number}}
+ * @returns {Promise<*>}
+ */
 export async function addWork(work) {
   const formData = new FormData();
 
@@ -56,11 +68,19 @@ export async function addWork(work) {
   });
 }
 
+/**
+ * @returns {Promise<Category[]>}
+ */
 export async function getCategories() {
   const categories = await (await fetch(`${API_URL}/categories`)).json();
   return categories.map(category => new Category(category));
 }
 
+/**
+ * @param email {string}
+ * @param password {string}
+ * @returns {Promise<Response<{userId: number, token: string}>>}
+ */
 export function login({email, password}) {
   const options = {
     method: 'POST',

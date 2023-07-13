@@ -1,3 +1,6 @@
+/**
+ * @param token {{userId: number, token: string}}
+ */
 export function save(token) {
   localStorage.setItem('token', JSON.stringify(token));
 }
@@ -15,6 +18,9 @@ export function getToken() {
 }
 
 export class UnauthorizedError extends Error {
+  /**
+   * @param message {string}
+   */
   constructor(message) {
     super(message);
     this.name = 'Unauthorized';
